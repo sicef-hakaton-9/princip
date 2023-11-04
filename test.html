@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>OSM Mapa</title>
+  <!-- Uključivanje Leaflet CSS-a i JavaScripta -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+  <!-- Div element za prikaz mape -->
+  <div id="map" style="height: 400px;"></div>
+
+  <script>
+    // Kreiranje mape
+    var map = L.map('map').setView([43.3152, 21.9134], 15);
+
+    // Dodajte OSM ploču kao sloj mape
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 15,
+    }).addTo(map);
+
+    // Dodavanje markera (opcionalno)
+    var marker = L.marker([43.3152, 21.9134]).addTo(map);
+
+    // Dodavanje popup-a markera (opcionalno)
+    marker.bindPopup("<b style=\"color:red;\">Vaša lokacija</b>").openPopup();
+  </script>
+</body>
+</html>

@@ -22,12 +22,12 @@
 <!-- Font Awesome Icons -->
 <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
-
 <!-- CSS Files -->
 
-
-
 <link id="pagestyle" href="./assets/css/soft-design-system.css?v=1.0.9" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 
 
@@ -84,6 +84,9 @@
 
 
 <section class="my-5 py-5">
+  <div class="col-6">
+    <div id="map" style="width: 100%; height: 500px;"></div>
+  </div>
 </section>
   
 
@@ -203,6 +206,22 @@
   }
 </script>
 
+<script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script>
+    // Kreiranje mape
+    var map = L.map('map').setView([43.3152, 21.9134], 15);
+
+    // Dodajte OSM ploču kao sloj mape
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 15,
+    }).addTo(map);
+
+    // Dodavanje markera (opcionalno)
+    var marker = L.marker([43.3152, 21.9134]).addTo(map);
+
+    // Dodavanje popup-a markera (opcionalno)
+    marker.bindPopup("<b style=\"color:red;\">Vaša lokacija</b>").openPopup();
+  </script>
 
 
 
