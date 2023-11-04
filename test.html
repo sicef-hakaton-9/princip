@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>OSM Mapa</title>
-  <!-- Uključivanje Leaflet CSS-a i JavaScripta -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <title>OSM Map with Route</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 </head>
 <body>
-  <!-- Div element za prikaz mape -->
-  <div id="map" style="height: 400px;"></div>
+    <div id="map" style="height: 400px;"></div>
 
-  <script>
-    // Kreiranje mape
-    var map = L.map('map').setView([43.3152, 21.9134], 15);
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
-    // Dodajte OSM ploču kao sloj mape
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 15,
-    }).addTo(map);
+    <script>
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    // Dodavanje markera (opcionalno)
-    var marker = L.marker([43.3152, 21.9134]).addTo(map);
+        var startPoint = L.latLng(51.505, -0.09); // Početna tačka
+        var endPoint = L.latLng(51.51, -0.1); // Krajnja tačka
 
-    // Dodavanje popup-a markera (opcionalno)
-    marker.bindPopup("<b style=\"color:red;\">Vaša lokacija</b>").openPopup();
-  </script>
+        L.Routing.control({
+            waypoints: [
+                startPoint,
+                endPoint
+            ]
+        }).addTo(map);
+    </script>
 </body>
 </html>

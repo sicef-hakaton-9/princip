@@ -25,12 +25,8 @@
 <!-- CSS Files -->
 
 <link id="pagestyle" href="./assets/css/soft-design-system.css?v=1.0.9" rel="stylesheet" />
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
 
 <!-- Nepcha Analytics (nepcha.com) -->
@@ -45,9 +41,13 @@
 <div class="container position-sticky z-index-sticky top-0"><div class="row"><div class="col-12">
 <nav class="navbar navbar-expand-lg  blur blur-rounded top-0 z-index-fixed shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
   <div class="container-fluid px-0">
-    <a class="navbar-brand font-weight-bolder mx-sm-auto" href="#" rel="tooltip" title="Designed and Coded by Princip Tim" data-placement="bottom" target="_blank">
+<a class="navbar-brand font-weight-bolder ms-sm-3" rel="tooltip" title="Designed and Coded by Creative Tim" data-placement="bottom" target="_blank">
       HealthAlert
     </a>
+
+          
+          <a href="" class="btn btn-sm  bg-gradient-primary  btn-round mb-0 me-1 mt-2 mt-md-0">Lista pacijenata</a>
+
   </div>
 </nav>
 <!-- End Navbar -->
@@ -83,9 +83,11 @@
 </header>
 
 
-<section class="my-5 py-5">
-  <div class="col-6">
-    <div id="map" style="width: 100%; height: 500px;"></div>
+<section class="my-5 py-5 row">
+  <div class="container p-5">
+    <div class="col-12 mx-auto">
+      <div id="map" style="width: 100%; height: 500px;"></div>
+    </div>
   </div>
 </section>
   
@@ -206,21 +208,24 @@
   }
 </script>
 
-<script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
   <script>
-    // Kreiranje mape
-    var map = L.map('map').setView([43.3152, 21.9134], 15);
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    // Dodajte OSM ploču kao sloj mape
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 15,
-    }).addTo(map);
+        var startPoint = L.latLng(43.3152, 21.9134);
+        var endPoint = L.latLng(43.3298, 21.8936);
 
-    // Dodavanje markera (opcionalno)
-    var marker = L.marker([43.3152, 21.9134]).addTo(map);
-
-    // Dodavanje popup-a markera (opcionalno)
-    marker.bindPopup("<b style=\"color:red;\">Vaša lokacija</b>").openPopup();
+        L.Routing.control({
+            waypoints: [
+                startPoint,
+                endPoint
+            ]
+        }).addTo(map);
   </script>
 
 
