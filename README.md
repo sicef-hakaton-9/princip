@@ -1,6 +1,6 @@
 # Aplikacija „<naziv_aplikacije>”
 
-## Tim „Princip”
+## Tim „Принцип”
 
 Aplikacija nastala na devetom [SICEF Hakatonu](https://hakaton.sicef.info/), 24-časovnom takmičenju u programiranju održanom od 3. do 5. novembra 2023. godine na Elektronskom fakultetu u Nišu.
 
