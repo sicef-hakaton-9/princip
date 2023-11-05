@@ -79,6 +79,8 @@ switch ($_GET['a']) {
 	        !isset($requestData['firstname']) ||
 	        !isset($requestData['lastname']) ||
 	        !isset($requestData['age']) ||
+	        !isset($requestData['number']) ||
+	        !isset($requestData['numberGuardian']) ||
 	        !isset($requestData['JMBG']) ||
 	        !isset($requestData['carton_id']) ||
 	        !isset($requestData['address'])
@@ -87,13 +89,15 @@ switch ($_GET['a']) {
 	        die('Error: Request it\'s not valid!');
 	    }
 
-		$query = "INSERT INTO patients (firstname, lastname, age, JMBG, carton_id, address) 
+		$query = "INSERT INTO patients (firstname, lastname, age, number, numberGuardian, JMBG, carton_id, address) 
               VALUES (:firstname, :lastname, :age, :JMBG, :carton_id, :address)";
 	    $statement = $pdo->prepare($query);
 
 	    $statement->bindParam(':firstname', $requestData['firstname']);
 	    $statement->bindParam(':lastname', $requestData['lastname']);
 	    $statement->bindParam(':age', $requestData['age']);
+	    $statement->bindParam(':number', $requestData['number']);
+	    $statement->bindParam(':numberGuardian', $requestData['numberGuardian']);
 	    $statement->bindParam(':JMBG', $requestData['JMBG']);
 	    $statement->bindParam(':carton_id', $requestData['carton_id']);
 	    $statement->bindParam(':address', $requestData['address']);
