@@ -32,7 +32,6 @@
 
 <!-- Nepcha Analytics (nepcha.com) -->
 <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-<script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/n<div id="map" style="width: 100%; height: 600px;"></div>epcha-analytics.js"></script>
 </head>
 
 <body class="index-page">
@@ -45,9 +44,11 @@
 <a class="navbar-brand font-weight-bolder ms-sm-3" rel="tooltip" title="Designed and Coded by Creative Tim" data-placement="bottom" target="_blank">
       HealthAlert
     </a>
+<div class="nav-item my-auto ms-3 ms-lg-0">
+          <a href="patients.php" class="btn btn-sm btn-outline-primary btn-round mb-0 me-1 mt-2 mt-md-0" style="float:right;">Lista pacijenata</a>
 
-          
-          <a href="patients.php" class="btn btn-sm  bg-gradient-primary  btn-round mb-0 me-1 mt-2 mt-md-0">Lista pacijenata</a>
+          <a href="/princip" class="btn btn-sm  bg-gradient-primary  btn-round mb-0 me-1 mt-2 mt-md-0">Monitorning</a>
+                </div>
 
   </div>
 </nav>

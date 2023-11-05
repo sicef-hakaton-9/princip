@@ -110,7 +110,6 @@
         }).addTo(map);
 
         var startPoint = L.latLng(43.3152, 21.9134);
-        var endPoint = L.latLng(43.3298, 21.8936);
 
         var custom = L.latLng(43.3152, 21.9134);
 
@@ -123,13 +122,6 @@
         var customMarker = L.marker(custom, { icon: customIcon }).addTo(map);
         customMarker.bindPopup('Ovo je Vaša pozicija!').openPopup();
 
-
-        L.Routing.control({
-            waypoints: [
-                startPoint,
-                endPoint
-            ]
-        }).addTo(map);
   </script>
 
         <script>
@@ -138,5 +130,164 @@
             $('#tabela').DataTable();
         });
     </script>
+
+    <script type="text/javascript">
+  let modalSubmit = document.querySelector("#modalSubmit");
+  let modalForm = document.querySelector("#formModal");
+  let modalErrors = document.querySelector(".errors");
+ 
+  modalSubmit.addEventListener("click", async (e) => {
+    e.preventDefault();
+    let formData = new FormData(modalForm);
+ 
+    let data = {
+      firstname: formData.get("firstname"),
+      lastname: formData.get("lastname"),
+      age: formData.get("age"),
+      JMBG: formData.get("JMBG"),
+      carton_id: formData.get("carton_id"),
+      address: formData.get("address"),
+      number: formData.get("brojTelefona"),
+      numberGuardian: formData.get("brojTelefonaStaratelja"),
+      pol: +formData.get("pol"),
+      rizik: +formData.get("rizik")
+    }
+
+    console.log(data);
+ 
+    let errors = validate(data);
+
+    console.log("greske", errors);
+ 
+    if(errors.length > 0)
+    {
+      errors.forEach(error => {
+        modalErrors.innerHTML+=`<span class="form-text text-danger">${error}</span><br />`;
+      })
+ 
+      return;
+    }
+ 
+ 
+    await fetch("https://forexfl.com/princip/api.php?a=add_patient", {
+      method: "POST",
+      body: JSON.stringify({
+        ...data,
+        token: "K5dP9q2w8GfXtLmVbU7Z"
+      })
+    })
+  })
+ 
+  function validate(data)
+  {
+    let errors = [];
+ 
+    if(isNaN(+data.age))
+    {
+      errors.push("Godine moraju biti broj!");
+    }
+ 
+    if(data.JMBG.length !== 13)
+    {
+      errors.push("JMBG mora da ima 13 karaktera!");
+    }
+ 
+    if(data.JMBG.split("").some(n => isNaN(+n)))
+    {
+      errors.push("JMBG mora da ima sve brojeve!");
+    }
+ 
+    if(data.carton_id.split("").some(n => isNaN(+n)))
+    {
+      errors.push("Broj kartona mora imati sve brojeve!")
+    }
+ 
+    return errors;
+  }
+</script>
+
+
+<script>
+  var globalv = 0;
+  function fetchAndDisplayData() {
+    fetch('https://forexfl.com/princip/api.php?a=getSOS')
+      .then(response => response.json())
+      .then(data => {
+        // Pristup prvom objektu u nizu
+        var firstData = data[0];
+        if(globalv > 0){
+          return;
+        }
+
+        document.getElementById('alert').innerHTML = `
+        <div style="padding-left:5px; padding-right:5px;">
+        <div class="alert alert-danger text-white font-weight-bold" style="margin-bottom:0px; display: flex; align-items: center;" role="alert">
+      Poziv za hitnu intervenciju kod pacijenta!
+      <button type="button" class="btn btn-primary ms-auto" onclick="resolve(${firstData.intervention_id})">Slučaj završen</button>
+    </div>
+    </div>
+                <div class="col-md-4 position-relative">
+              <div id="alert" class="p-3">
+                <h4 class="mb-3">${firstData.firstname} ${firstData.lastname} <small style="font-size:12px;">(${firstData.pol})</small></h4>
+                <span class="mb-2 text-xs">Broj pacijenta: <span class="text-dark font-weight-bold ms-sm-2">${firstData.number}</span></span><br>
+                <span class="mb-2 text-xs">Broj staratelja: <span class="text-dark ms-sm-2 font-weight-bold">${firstData.numberGuardian}</span></span><br>
+                <span class="mb-2 text-xs">JMBG: <span class="text-dark ms-sm-2 font-weight-bold">${firstData.JMBG}</span></span><br>
+                <span class="mb-2 text-xs">Godine: <span class="text-dark ms-sm-2 font-weight-bold">${firstData.age}</span></span><br>
+                <span class="mb-2 text-xs">Broj kartona: <span class="text-dark ms-sm-2 font-weight-bold">${firstData.carton_id}</span></span><br>
+                <span class="mb-2 text-xs">Adresa: <span class="text-dark ms-sm-2 font-weight-bold">${firstData.address}</span></span>
+              </div>
+              <hr class="vertical dark">
+            </div>
+            <div class="col-md-4 position-relative">
+              <div class="p-3 text-center mt-4">
+                <h5 class="mt-3">Krvni pritisak</h5>
+                <h1 class="text-gradient text-primary"> <span id="state2">${firstData.blood_pressure}</span></h1>
+              </div>
+              <hr class="vertical dark">
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 text-center mt-4">
+                <h5 class="mt-3">Puls</h5>
+                <h1 class="text-gradient text-primary"> <span id="state2">${firstData.pulse}</span></h1>
+              </div>
+            </div>
+        `;
+
+          var coords = firstData.coords.split(', '); // Razdvajanje koordinata
+          var latitude = parseFloat(coords[0]); // Konvertovanje u broj
+          var longitude = parseFloat(coords[1]); // Konvertovanje u broj
+
+          L.Routing.control({
+              waypoints: [
+                  L.latLng(43.3152, 21.9134),
+                  L.latLng(latitude, longitude)
+              ]
+          }).addTo(map);
+          globalv++;
+      })
+      .catch(error => {
+        console.error('Došlo je do greške prilikom preuzimanja podataka:', error);
+      });
+  }
+
+  setInterval(fetchAndDisplayData, 5000);
+  fetchAndDisplayData();
+
+  async function resolve(id)
+  {
+    await fetch(`https://forexfl.com/princip/api.php?a=resolveSOS`, {
+      method: "POST",
+      body: JSON.stringify({id: +id})
+    });
+
+    document.querySelector("#alert").innerHTML = `<div class="p-3 text-center">
+                <h5 class="mt-3">Trenutno nema nijedne aktivne intervencije!</h5>
+                  <div id="clock">
+                  <h3 id="time"></h3>
+                  <h3 style="font-size: 17px; margin-top:-7px;" id="date"></h3>
+                </div>`;
+  }
+</script>
+
 
 

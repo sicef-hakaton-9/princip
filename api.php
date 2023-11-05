@@ -7,7 +7,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $requestData = json_decode(file_get_contents("php://input"), true);
 
 if($requestData['token'] != 'K5dP9q2w8GfXtLmVbU7Z'){
-	die("Error: Not validate token!");
+	//die("Error: Not validate token!");
 }
 
 switch ($_GET['a']) {
@@ -19,7 +19,6 @@ switch ($_GET['a']) {
 
 	    if (
 	        !isset($requestData['patient_id']) ||
-	        !isset($requestData['time']) ||
 	        !isset($requestData['pulse']) ||
 	        !isset($requestData['coords']) ||
 	        !isset($requestData['blood_pressure'])
@@ -28,12 +27,11 @@ switch ($_GET['a']) {
 	        die('Error: Request it\'s not valid!');
 	    }
 
-		$query = "INSERT INTO intervention (patient_id, coords, time, pulse, blood_pressure, sos) VALUES (:patient_id, :coords, :time, :pulse, :blood_pressure, '1')";
+		$query = "INSERT INTO intervention (patient_id, coords, pulse, blood_pressure, sos) VALUES (:patient_id, :coords, :pulse, :blood_pressure, '1')";
 		$statement = $pdo->prepare($query);
 
 		$statement->bindParam(':patient_id', $requestData['patient_id']);
 		$statement->bindParam(':coords', $requestData['coords']);
-		$statement->bindParam(':time', $requestData['time']);
 		$statement->bindParam(':pulse', $requestData['pulse']);
 		$statement->bindParam(':blood_pressure', $requestData['blood_pressure']);
 
@@ -49,7 +47,6 @@ switch ($_GET['a']) {
 
 	    if (
 	        !isset($requestData['patient_id']) ||
-	        !isset($requestData['time']) ||
 	        !isset($requestData['pulse']) ||
 	        !isset($requestData['blood_pressure'])
 	    ) {
@@ -57,11 +54,10 @@ switch ($_GET['a']) {
 	        die('Error: Request it\'s not valid!');
 	    }
 
-		$query = "INSERT INTO intervention (patient_id, time, pulse, blood_pressure, sos) VALUES (:patient_id, :time, :pulse, :blood_pressure, '0')";
+		$query = "INSERT INTO intervention (patient_id, pulse, blood_pressure, sos) VALUES (:patient_id, :pulse, :blood_pressure, '0')";
 		$statement = $pdo->prepare($query);
 
 		$statement->bindParam(':patient_id', $requestData['patient_id']);
-		$statement->bindParam(':time', $requestData['time']);
 		$statement->bindParam(':pulse', $requestData['pulse']);
 		$statement->bindParam(':blood_pressure', $requestData['blood_pressure']);
 
@@ -81,6 +77,8 @@ switch ($_GET['a']) {
 	        !isset($requestData['age']) ||
 	        !isset($requestData['number']) ||
 	        !isset($requestData['numberGuardian']) ||
+	        !isset($requestData['pol']) ||
+	        !isset($requestData['rizik']) ||
 	        !isset($requestData['JMBG']) ||
 	        !isset($requestData['carton_id']) ||
 	        !isset($requestData['address'])
@@ -89,8 +87,8 @@ switch ($_GET['a']) {
 	        die('Error: Request it\'s not valid!');
 	    }
 
-		$query = "INSERT INTO patients (firstname, lastname, age, number, numberGuardian, JMBG, carton_id, address) 
-              VALUES (:firstname, :lastname, :age, :JMBG, :carton_id, :address)";
+		$query = "INSERT INTO patients (firstname, lastname, age, number, numberGuardian, pol, rizik, JMBG, carton_id, address) 
+              VALUES (:firstname, :lastname, :age, :number, :numberGuardian, :pol, :rizik, :JMBG, :carton_id, :address)";
 	    $statement = $pdo->prepare($query);
 
 	    $statement->bindParam(':firstname', $requestData['firstname']);
@@ -101,6 +99,8 @@ switch ($_GET['a']) {
 	    $statement->bindParam(':JMBG', $requestData['JMBG']);
 	    $statement->bindParam(':carton_id', $requestData['carton_id']);
 	    $statement->bindParam(':address', $requestData['address']);
+	    $statement->bindParam(':pol', $requestData['pol']);
+	    $statement->bindParam(':rizik', $requestData['rizik']);
 
 	    $result = $statement->execute();
 
@@ -114,6 +114,28 @@ switch ($_GET['a']) {
 
         break;     
 
+    case 'getSOS':
+
+	    $query = "SELECT i.*, i.id as intervention_id, p.* FROM intervention AS i
+	          INNER JOIN patients AS p ON i.patient_id = p.id
+	          WHERE i.sos = 1 AND i.solved = 0";
+		$statement = $pdo->prepare($query);
+		$statement->execute();
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+		$jsonData = json_encode($result);
+
+		echo $jsonData;
+
+    break;
+
+    case 'resolveSOS':
+    	$query = "UPDATE intervention SET solved = 1 WHERE id = :id";
+    	$statement = $pdo->prepare($query);
+    	$statement->bindParam(':id', $requestData['id']);
+
+    	$result = $statement->execute();
+    break;
     default:
     	die('Error: API Not Found!');
         break;
